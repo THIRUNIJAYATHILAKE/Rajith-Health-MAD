@@ -1,54 +1,53 @@
-<<<<<<< HEAD
-# Welcome to your Expo app 👋
+# Healthcare App - Corona Tracker 💉🌍
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This app provides up-to-date information about COVID-19 statistics in various countries. Users can view the number of cases, recoveries, and deaths globally and for specific countries. The app also includes a simple user authentication system, allowing users to register and log in to track their progress and view statistics.
 
-## Get started
+## Table of Contents 📚
+- [Project Description](#project-description)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [User Authentication](#user-authentication)
+- [Navigation](#navigation)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. Install dependencies
+## Project Description 📝
 
+The **Corona Tracker App** provides users with a user-friendly interface to track the latest COVID-19 statistics across various countries. The app fetches data from a publicly available API to display critical health data such as confirmed cases, recoveries, and deaths for each country.
+
+### Features:
+- View real-time COVID-19 statistics for any country 🌐.
+- User authentication system with registration and login forms 🔑.
+- Display information in a card view with status tags, title, and description 🏷️.
+- Floating button to track the number of times a user clicks on an item in the list 🖱️.
+- Context API (or another state management library) to manage the click count state 📊.
+
+## Features 🚀
+
+### User Authentication 🔒
+- **Registration**: Allows users to sign up with a username and password.
+- **Login**: Users can log in with their credentials to access the home page.
+- Form validations are implemented for both registration and login forms using hooks.
+
+### Corona Statistics 📊
+- Fetches COVID-19 data from a public API (e.g., `https://api.covid19api.com/`).
+- Displays country-specific details, including confirmed cases, deaths, and recoveries.
+- Information is displayed in a card view format with status tags, titles, and descriptions.
+
+### Floating Button 🦸
+- A floating button at the bottom of the screen shows the count of user clicks on items in the list.
+- State management is implemented using **Context API** or another simple state management library like **Zustand** or **Redux**.
+
+### Navigation 🧭
+- Simple navigation using `react-navigation` or `expo-router`.
+- After successful login, users are directed to the home page where their username is displayed in the top bar.
+
+## Installation ⚙️
+
+Follow these steps to run the app locally:
+
+1. Clone the repository:
    ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-=======
-# Rajith-Health-MAD
->>>>>>> f9a6971608197ac71c8fa5f573fe57327baa0722
+   git clone https://github.com/THIRUNIJAYATHILAKE/Rajith-Health-MAD
