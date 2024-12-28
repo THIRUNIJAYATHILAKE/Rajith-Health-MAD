@@ -12,22 +12,20 @@ import {
   Alert,
   Image,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
-import { LoginFormData, FormErrors } from '../types/auth.types';
-import { MOCK_USER } from '../constants/mockData';
+// import { LoginFormData, FormErrors } from '../types/auth.types';
+// import { MOCK_USER } from '../constants/mockData';
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
 };
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
 
-  const [errors, setErrors] = useState<FormErrors>({});
+  
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -36,61 +34,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     return emailRegex.test(email);
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleLogin = async (): Promise<void> => {
-    if (!validateForm()) {
+  const handleLogin = async () => {
+    const { email, password } = formData;
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
     setLoading(true);
-
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      if (formData.email === MOCK_USER.email && formData.password === MOCK_USER.password) {
-        navigation.replace('Home', { 
-          username: MOCK_USER.username 
-        });
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        const { email: storedEmail, password: storedPassword, username } = JSON.parse(userData);
+        if (email === storedEmail && password === storedPassword) {
+          navigation.replace('Home', { username });
+        } else {
+          Alert.alert('Error', 'Invalid email or password');
+        }
       } else {
-        Alert.alert('Error', 'Invalid email or password');
+        Alert.alert('Error', 'No user found. Please sign up.');
       }
     } catch (error) {
-      Alert.alert('Error', 'Login failed. Please try again.');
+      Alert.alert('Error', 'Failed to login');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleInputChange = (name: keyof LoginFormData, value: string): void => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
     }
   };
 
@@ -118,27 +85,25 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Email</Text>
             <TextInput
-              style={[styles.input, errors.email && styles.inputError]}
+              style={[styles.input, styles.inputError]}
               value={formData.email}
-              onChangeText={(text) => handleInputChange('email', text)}
+               onChangeText={(text) => setFormData({ ...formData, email: text })}
               placeholder="Enter your email"
               placeholderTextColor="#88A398"
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
             />
-            {errors.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )}
+           
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Password</Text>
             <View style={styles.passwordContainer}>
               <TextInput
-                style={[styles.input, styles.passwordInput, errors.password && styles.inputError]}
+                style={[styles.input, styles.passwordInput, styles.inputError]}
                 value={formData.password}
-                onChangeText={(text) => handleInputChange('password', text)}
+               onChangeText={(text) => setFormData({ ...formData, password: text })}
                 placeholder="Enter your password"
                 placeholderTextColor="#88A398"
                 secureTextEntry={!showPassword}
@@ -150,9 +115,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 <Text>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
               </TouchableOpacity>
             </View>
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
+            
           </View>
 
           <TouchableOpacity style={styles.forgotPassword}>
