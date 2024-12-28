@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useCount } from '../context/CountContext';
 
@@ -23,9 +24,27 @@ interface Item {
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [username, setUsername] = useState<string | null>(null);
   const { count, incrementCount } = useCount();
 
   useEffect(() => {
+
+     const fetchUsername = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('userData');
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          setUsername(parsedData.username || 'User');
+        } else {
+          setUsername('User');
+        }
+      } catch (error) {
+        console.error('Error fetching username:', error);
+        setUsername('User');
+      }
+    };
+
+
     const fetchStats = async () => {
       try {
         const response = await axios.get('https://disease.sh/v3/covid-19/countries');
@@ -44,6 +63,7 @@ const HomeScreen: React.FC = () => {
         setLoading(false);
       }
     };
+    fetchUsername();
     fetchStats();
   }, []);
 
@@ -71,6 +91,10 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+    <Text style={styles.greeting}>
+        Hi {username} 👋, stay updated with COVID-19 stats
+      </Text>
+
       {loading ? (
         <ActivityIndicator size="large" color="#2E7D52" />
       ) : (
@@ -93,6 +117,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F9F7',
+  },
+  greeting: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E7D52',
+    textAlign: 'center',
+    marginBottom: 16,
   },
   list: {
     padding: 16,
