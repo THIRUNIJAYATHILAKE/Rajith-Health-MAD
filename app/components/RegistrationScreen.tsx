@@ -11,6 +11,7 @@ import {
   Alert,
   Image,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 
@@ -73,21 +74,31 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleSignup = (): void => {
+  const handleSignup = async (): Promise<void> =>  {
     if (!validateForm()) {
+      console.log('Validation failed', errors); // Debug validation errors
       return;
     }
 
     // Simulate API call
+    try {
+    console.log('Attempting to save user data...'); // Add this line
+    await AsyncStorage.setItem('userData', JSON.stringify(formData));
+    console.log('User data saved successfully'); // Add this line
+    
     Alert.alert('Success', 'Account created successfully!', [
-    {
-      text: 'OK',
-      onPress: () => {
-        // Navigate to Home screen
-        navigation.replace('Home', { username: formData.username });
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('Navigating to Login...'); // Add this line
+          navigation.navigate('Login');
+        },
       },
-    },
-  ]);
+    ]);
+  } catch (error) {
+    console.error('Error saving user data:', error); // Enhanced error logging
+    Alert.alert('Error', 'Failed to save user data');
+  }
   };
 
   return (
